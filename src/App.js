@@ -4,6 +4,7 @@ import Board from "./components/Board";
 function App() {
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [isXNext, setIsXNext] = useState(true);
+  const [isSinglePlayer, setIsSinglePlayer] = useState(true);
 
   const calculateWinner = (squares) => {
     const lines = [
@@ -83,7 +84,7 @@ function App() {
     const nextIsXNext = !isXNext;
     setIsXNext(nextIsXNext);
     // If it's AI's turn and the game isn't over, make the AI move
-    if (!nextIsXNext) {
+    if (!nextIsXNext && isSinglePlayer) {
       const move = aiMove(squaresCopy);
       if (move !== null) {
         setTimeout(() => {
@@ -100,16 +101,31 @@ function App() {
     ? `Winner: ${winner}`
     : `Next player: ${isXNext ? "X" : "O"}`;
 
+  const gameMode = isSinglePlayer ? "Single Player" : "Two Player";
+
   const resetGame = () => {
     setSquares(Array(9).fill(null));
     setIsXNext(true);
   };
 
+  const handleGameType = (value) => {
+    setIsSinglePlayer(value);
+  };
+
   return (
     <div className="App">
+      <div className="status">{gameMode}</div>
       <div className="status">{status}</div>
       <Board squares={squares} onClick={handleClick} />
-      <button onClick={resetGame}>Reset</button>
+      <button className="button" onClick={resetGame}>
+        Reset
+      </button>
+      <button className="button" onClick={() => handleGameType(true)}>
+        Single Player
+      </button>
+      <button className="button" onClick={() => handleGameType(false)}>
+        Two Player
+      </button>
     </div>
   );
 }
